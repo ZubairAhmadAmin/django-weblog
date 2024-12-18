@@ -1,0 +1,10 @@
+<center>
+{% for article in articles %}
+    <article>
+        <img src='{{article.image.url}}' alt='{{article.title}}'>
+        <h2><a href='{% url 'blog:detail' article.slug %}'>{{article.title}}</a></h2>
+        <smal>{{article.publish}}</smal>
+        <p>{{article.description}}</p>
+    </article>
+{% endfor %}
+</center>

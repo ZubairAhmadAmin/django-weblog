@@ -1,4 +1,6 @@
 from django.db import models
+from django.urls import reverse
+from django.contrib.auth.models import User
 from django.utils.html import format_html
 from django.utils import timezone
 from extensions.utils import jalali_converter
@@ -39,6 +41,7 @@ class Article(models.Model):
         ('d', 'پیش نویس'),
         ('p', 'منتشر شده'),
     )
+    author = models.ForeignKey(User, null=True, on_delete=models.SET_NULL, related_name='articles', verbose_name='نویسنده')
     category = models.ManyToManyField(Category, verbose_name='دسته بندی', related_name='articles')
     title = models.CharField(max_length = 255, verbose_name='عنوان مقاله')
     slug = models.SlugField(max_length = 100, unique=True, verbose_name='آدرس مقاله')
@@ -58,18 +61,23 @@ class Article(models.Model):
     def __str__(self):
         return self.title
     
+    def get_absolute_url(self):
+        return reverse('account:home')
+    
     
     def Jpublish(self):
         return jalali_converter(self.publish)
     Jpublish.short_description = 'زمان انتشار'
     
     
-    def category_published(self):
-        return self.category.filter(status=True)
-    
     def image_tag(self):
         return format_html("<img width='100' heigth='75' style='border-radius: 5px' src='{}'>".format(self.image.url))
     image_tag.short_description = 'تصویر'
+    
+    
+    def category_to_str(self):
+        return ", ".join([category.title for category in self.category.active()])
+    category_to_str.short_description = 'دسته بندی'
     
     objects = ArticleManager()
     

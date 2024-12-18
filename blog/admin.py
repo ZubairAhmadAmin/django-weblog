@@ -32,17 +32,12 @@ class CategoryAdmin(admin.ModelAdmin):
         modeladmin.message_user(request, "{} دسته بندی {}".format(rows_updated, message_user))
 
 class ArticleAdmin(admin.ModelAdmin):
-    list_display = ('title', 'image_tag', 'slug', 'Jpublish', 'status', 'category_to_str')
-    list_filter = ('publish', 'status')
+    list_display = ('title', 'image_tag', 'slug', 'author', 'Jpublish', 'status', 'category_to_str')
+    list_filter = ('publish', 'status', 'author')
     search_fields = ('title', 'description')
     prepopulated_fields = {'slug': ('title',)}
     ordering = ['-status', '-publish']
     actions = ["make_published", "make_draft"]
-    
-
-    def category_to_str(self, obj):
-        return ", ".join([category.title for category in obj.category_published()])
-    category_to_str.short_description = 'دسته بندی'
     
     # add action to admin panle
     @admin.action(description='انتشار مقالات انتخاب شده')
