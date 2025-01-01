@@ -32,7 +32,7 @@ class CategoryAdmin(admin.ModelAdmin):
         modeladmin.message_user(request, "{} دسته بندی {}".format(rows_updated, message_user))
 
 class ArticleAdmin(admin.ModelAdmin):
-    list_display = ('title', 'image_tag', 'slug', 'author', 'Jpublish', 'status', 'category_to_str')
+    list_display = ('title', 'image_tag', 'slug', 'author', 'Jpublish', 'is_special', 'status', 'category_to_str')
     list_filter = ('publish', 'status', 'author')
     search_fields = ('title', 'description')
     prepopulated_fields = {'slug': ('title',)}

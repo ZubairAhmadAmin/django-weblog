@@ -18,10 +18,15 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
+from account.views import Login, activate, signup
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path("login/", Login.as_view(), name="login"),
+    path("register/", signup, name="register"),
+    path('activate/<str:uidb64>/<str:token>/', activate, name='activate'),
     path('', include('blog.urls')),
+    path('', include('django.contrib.auth.urls')),
     path('account/', include('account.urls'))
 ]
 

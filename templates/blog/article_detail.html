@@ -10,6 +10,9 @@
             <div class="col-md-10 col-lg-8 col-xl-7">
                 <div class="site-heading">
                     <h1>{{object.title}}</h1>
+                    {% if article.is_special %}
+                        <span style="font-size: 15px; color: white; background-color: rgb(181, 12, 12); border-radius: 5px; padding: 3px;">ویژه</span>               
+                    {% endif %}
                     <time>انتشار شده: {{object.Jpublish}}</time>
                 </div>
             </div>
@@ -22,7 +25,16 @@
     <div class="container px-4 px-lg-5">
         <div class="row gx-4 gx-lg-5 justify-content-center">
             <div class="col-md-10 col-lg-8 col-xl-7 text-justify">
-                {{ object.description | striptags }}
+            {% if object.is_special %}
+                {% if user.is_authenticated and user.is_special_user and user == object.author or user.is_superuser or user == object.author %}
+                    {{ object.description | striptags }}   
+                {% else %}
+                    <h3 class="post-subtitle" style="font-size: 20px;">{{article.description | striptags | truncatewords:30}}</h3>
+                    <p class="alert alert-warning" style="font-size: 15px;">این مقاله, ویژه است و برای مشاهده آن باید<a class="link-primary text-decoration-none" href="#"> اشتراک ویژه</a> تهیه نماید.</p>
+                {% endif %}
+            {% else %}
+                {{ object.description | striptags }}   
+            {% endif %}
             </div>
         </div>
     </div>

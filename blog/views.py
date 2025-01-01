@@ -1,7 +1,8 @@
-from django.contrib.auth.models import User
+from account.models import User
 from django.shortcuts import render, get_object_or_404
 from django.views.generic import ListView, DetailView
 from .models import Article, Category
+from account.mixins import AuthorAccessMixin
 # from django.core.paginator import Paginator
 
 # Class Base View
@@ -19,7 +20,13 @@ class ArticleDetail(DetailView):
     def get_object(self):
         slug = self.kwargs.get('slug')
         return get_object_or_404(Article.objects.published(), slug=slug)
-    
+
+
+class ArticlePreView(AuthorAccessMixin, DetailView):
+    def get_object(self):
+        pk = self.kwargs.get('pk')
+        return get_object_or_404(Article, pk=pk)
+
 
 class CategoryList(ListView):
     paginate_by = 2

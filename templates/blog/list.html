@@ -2,9 +2,10 @@
 
 {% load static %}
 {% load base_tags %}
+
 {% block main %}
  <!-- Page Header-->
- <header class="masthead" style="background-image: url('{% static "blog/assets/img/home-bg.jpg" %}')">
+<header class="masthead" style="background-image: url('{% static 'blog/assets/img/home-bg.jpg' %}');">
     <div class="container position-relative px-4 px-lg-5">
         <div class="row gx-4 gx-lg-5 justify-content-center">
             <div class="col-md-10 col-lg-8 col-xl-7">
@@ -28,8 +29,14 @@
             {% for article in object_list %}
                 <div class="post-preview">
                     <a href="{% url 'blog:detail' article.slug %}">
-                        <h2 class="post-title">{{article.title}}</h2>
-                        <h3 class="post-subtitle">{{article.description | striptags | truncatewords:30}}</h3>
+                        <h2 class="post-title" style="font-size: 25px;">
+                            {{article.title}}
+                            {% if article.is_special %}
+                                <span>ویژه</span>
+                                <span class="badge badge-danger" style="font-size: 15px; color: white; background-color: rgb(181, 12, 12); border-radius: 5px; padding: 3px;">ویژه</span>               
+                            {% endif %}
+                        </h2>
+                        <h3 class="post-subtitle" style="font-size: 20px;">{{article.description | striptags | truncatewords:30}}</h3>
                     </a>
                     <p class="post-meta">
                         {{article.Jpublish}}

@@ -1,45 +1,55 @@
 {% extends "registration/base.html" %}
 
-{% load crispy_forms_tags %}
+{% load crispy_forms_tags %} {% block title %}
 
-{% block title %}{% block title-meta %}
-  لیست مقالات         
-{% endblock  %}{% endblock  %}
+{% block title-meta %} لیست مقالات {% endblock %}
 
-{% block main %}
+{% endblock %} {% block main %}
+
 <div class="col-md-12">
   <div class="card card-primary">
     <div class="card-header">
       <h3 class="card-title mb-0 float-left">افزودن مقاله</h3>
     </div>
     <div class="card-body">
-      <form method="post" enctype='multipart/form-data'>{% csrf_token %}
+      <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
         <div class="row">
-          <div class="col-6">
-            {{ form.title | as_crispy_field }}
-          </div>
-          <div class="col-6">
-            {{ form.slug | as_crispy_field }}
-          </div>
-          <div class="col-12">
-            {{ form.description | as_crispy_field }}
-          </div>
-          <div class="col-6">
-            {{ form.category | as_crispy_field }}
-          </div>
-          <div class="col-6">
-            {{ form.image | as_crispy_field }}
-            {{ form.publish | as_crispy_field }}
-          </div>
-          <div class="col-6">
-            {{ form.author | as_crispy_field }}
-          </div>
-          <div class="col-6">
-            {{ form.status | as_crispy_field }}
-          </div>
+          <div class="col-6">{{ form.title | as_crispy_field }}</div>
+          <div class="col-6">{{ form.slug | as_crispy_field }}</div>
+          <div class="col-12">{{ form.description | as_crispy_field }}</div>
+          <div class="col-6">{{ form.category | as_crispy_field }}</div>
+          <div class="col-6">{{ form.image | as_crispy_field }}</div>
+          <div class="col-6">{{ form.publish | as_crispy_field }}</div>
+          {% if user.is_superuser %}
+            <div class="col-6">{{ form.author | as_crispy_field }}</div>
+            <div class="col-6">{{ form.status | as_crispy_field }}</div>
+          {% else %}
+            <div class="col-6">
+              <div class="col-6">
+                <div id="div_id_status" class="form-group">
+                  <label for="id_status" class="requiredField">
+                    وضیعت<span class="asteriskField">*</span>
+                  </label>
+                  <div>
+                    <select name="status" class="select form-control" required id="id_status">
+                      <option value>---------</option>
+                      <option value="d">پیش نویس</option>
+                      <option value="i">ارسال به ادمین</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+          {% endif %}
+          <div class="col-6">{{ form.is_special | as_crispy_field }}</div>
         </div>
         <button type="submit" class="btn btn-primary mb-3">ارسال مقاله</button>
+        {% if user.is_superuser and request.resolver_match.kwargs.pk %}
+          <a class="btn btn-danger mb-3" href="{% url 'account:article-delete' request.resolver_match.kwargs.pk %}">حذف</a>
+        {% endif %}
       </form>
     </div>
+  </div>
+  {% endblock %}
 </div>
-{% endblock  %}

@@ -1,6 +1,6 @@
 from django.db import models
 from django.urls import reverse
-from django.contrib.auth.models import User
+from account.models import User
 from django.utils.html import format_html
 from django.utils import timezone
 from extensions.utils import jalali_converter
@@ -38,8 +38,10 @@ class Category(models.Model):
 
 class Article(models.Model):
     STATUS_CHOICES = (
-        ('d', 'پیش نویس'),
-        ('p', 'منتشر شده'),
+        ('d', 'پیش نویس'),          #draft
+        ('p', 'منتشر شده'),         #publish
+        ('i', 'در حال بررسی'),      #investigation
+        ('b', 'بر گشت داده شده'),   #back
     )
     author = models.ForeignKey(User, null=True, on_delete=models.SET_NULL, related_name='articles', verbose_name='نویسنده')
     category = models.ManyToManyField(Category, verbose_name='دسته بندی', related_name='articles')
@@ -50,6 +52,7 @@ class Article(models.Model):
     publish = models.DateTimeField(default=timezone.now, verbose_name='زمان انتشار')
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
+    is_special = models.BooleanField(default=False, verbose_name='مقاله ویژه')
     status = models.CharField(max_length = 1, choices=STATUS_CHOICES, verbose_name='وضیعت')
     
     class Meta:
