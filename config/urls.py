@@ -22,6 +22,7 @@ from account.views import Login, activate, signup
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('comment/', include('comment.urls')),
     path("login/", Login.as_view(), name="login"),
     path("register/", signup, name="register"),
     path('activate/<str:uidb64>/<str:token>/', activate, name='activate'),

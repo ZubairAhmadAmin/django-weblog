@@ -1,5 +1,6 @@
 {% extends "blog/base.html" %}
 
+{% load comment_tags %}  {# Loading the template tag #}
 {% block title %} | {{object.title}} {% endblock  %}
 
 {% block main %}
@@ -35,6 +36,10 @@
             {% else %}
                 {{ object.description | striptags }}   
             {% endif %}
+
+            {% render_comments object request %} 
+            {% include_bootstrap %}
+            {% include_static %}
             </div>
         </div>
     </div>
