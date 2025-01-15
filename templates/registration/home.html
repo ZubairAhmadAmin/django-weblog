@@ -27,11 +27,19 @@
             <tbody>
               {% for article in object_list %}
                 <tr>
-                    <td>{{article.title}}</td>
+                  {% if article.status in 'bd'|make_list or user.is_superuser %}
+                    <td>
+                      <a class="text-decoration-none text-dark " href="{% url 'account:article-update' article.pk %}">{{article.title | striptags | safe | escape | truncatewords:'2'}}</a>
+                    </td>
+                  {% else %}
+                    <td>
+                      {{article.title | striptags | safe | escape | truncatewords:'2'}}
+                    </td>
+                  {% endif %}
                     <td><img src="{{article.image.url}}" width='120'></td>
                     <td>{{article.category_to_str}}</td>
                     <td class='badge badge-secondary-subtle pt-3'>{{article.author.get_full_name}}</td>
-                    <td>{{article.description | striptags | truncatewords:'20'}}</td>
+                    <td>{{article.description | striptags | safe | escape | truncatewords:'20'}}</td>
                     <td class='badge badge-secondary-subtle pt-3'>{{article.Jpublish}}</td>
                     <td>
                       {% if article.is_special %}
@@ -41,9 +49,6 @@
                       {% endif %}
                     </td>
                     <td>
-                        {% if article.status in 'bd'|make_list or user.is_superuser %}
-                          <a class='badge text-white' style="background-color: #b3da06;" href="{% url 'account:article-update' article.pk %}">ایدیت</a>
-                        {% endif %}
                         {% if user.is_superuser %}
                           <a class='badge badge-danger' href="{% url 'account:article-delete' article.pk %}">حذف</a>
                         {% endif %}

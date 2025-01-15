@@ -11,4 +11,8 @@
             {% endif %}
         {% endfor %}
     </ul>
+    <form class="d-flex" action="{% url 'blog:search' %}">
+        <input type="text" class="form-control me-5 w-100 rounded-2 h-25"  name="q" placeholder="جستجو مقاله">
+        <button type="submit" class="btn btn-success me-2 p-1 px-3 rounded-2 w-40">جستجو</button>
+    </form>
 </div>

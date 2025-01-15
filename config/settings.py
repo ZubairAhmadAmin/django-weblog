@@ -14,6 +14,10 @@ from pathlib import Path
 from decouple import config
 import os
 
+import django
+from django.utils.translation import gettext, gettext_lazy
+django.utils.translation.ugettext = gettext
+django.utils.translation.ugettext_lazy = gettext_lazy
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -49,9 +53,12 @@ INSTALLED_APPS = [
     'crispy_bootstrap4',
     'django_gravatar',
     'comment',
+    'star_ratings',
+    'django.contrib.humanize',
     
     'blog.apps.BlogConfig',
-    'account.apps.AccountConfig'
+    'account.apps.AccountConfig',
+    'payment.apps.PaymentConfig',
 ]
 
 MIDDLEWARE = [
@@ -62,6 +69,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
+    'blog.middleware.SaveIPAddressMiddleware',
 ]
 
 ROOT_URLCONF = 'config.urls'
@@ -88,10 +97,30 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql', 
+#         'NAME': config('NAME'),
+#         'USER': config('USER'),
+#         'PASSWORD': config('PASSWORD'),
+#         'HOST': config('HOST'),
+#         'PORT': config('PORT'),
+#     }
+# }
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'rtlweblog',
+        'USER': 'root',
+        'PASSWORD': '',
+        'HOST': 'localhost',
+        'PORT': '3306'
     }
 }
 
@@ -150,10 +179,13 @@ CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 
 AUTH_USER_MODEL = 'account.User'
-
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = config('EMAIL_HOST')
 EMAIL_USE_TLS = True
 EMAIL_PORT = config('EMAIL_PORT')
 EMAIL_HOST_USER = config('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
+
+STAR_RATINGS_STAR_HEIGHT = 18
+# STAR_RATINGS_RANGE = 3
+# STAR_RATINGS_RERATE = False

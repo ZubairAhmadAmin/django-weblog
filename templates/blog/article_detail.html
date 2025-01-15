@@ -1,5 +1,8 @@
 {% extends "blog/base.html" %}
 
+{% load humanize %}
+{% load ratings %}
+{% load base_tags %}
 {% load comment_tags %}  {# Loading the template tag #}
 {% block title %} | {{object.title}} {% endblock  %}
 
@@ -14,7 +17,9 @@
                     {% if article.is_special %}
                         <span style="font-size: 15px; color: white; background-color: rgb(181, 12, 12); border-radius: 5px; padding: 3px;">ویژه</span>               
                     {% endif %}
-                    <time>انتشار شده: {{object.Jpublish}}</time>
+                    <time>انتشار شده: {{object.publish | naturaltime}}</time>
+                    <div>{% ratings object %}</div>
+                    <div>بازدیدها: {{ object.hits.count }}</div>
                 </div>
             </div>
         </div>
@@ -25,21 +30,71 @@
 <article class="mb-4">
     <div class="container px-4 px-lg-5">
         <div class="row gx-4 gx-lg-5 justify-content-center">
+            <aside style="width: 240px; position: absolute; left: 50px;">
+                {% popular_articles %}
+                {% hot_articles %}
+            </aside>
             <div class="col-md-10 col-lg-8 col-xl-7 text-justify">
             {% if object.is_special %}
-                {% if user.is_authenticated and user.is_special_user and user == object.author or user.is_superuser or user == object.author %}
-                    {{ object.description | striptags }}   
+                {% if user.is_authenticated and user.is_special_user or user.is_superuser %}
+                    {{ object.description | striptags | safe | escape }}  
                 {% else %}
-                    <h3 class="post-subtitle" style="font-size: 20px;">{{article.description | striptags | truncatewords:30}}</h3>
-                    <p class="alert alert-warning" style="font-size: 15px;">این مقاله, ویژه است و برای مشاهده آن باید<a class="link-primary text-decoration-none" href="#"> اشتراک ویژه</a> تهیه نماید.</p>
-                {% endif %}
-            {% else %}
-                {{ object.description | striptags }}   
-            {% endif %}
+                    <p class="alert alert-danger text-center rounded fs-4" style="font-size: 15px;">این مقاله ویژه است و برای مشاهده آن بایداشتراک ویژه تهیه نماید.</p>
+                    <!-- Modal -->
+                    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">اشتراک ویژه</h5>
+                            <button type="button" class="btn-close m-0" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                            {% include 'blog/partials/payment_form.html' %}
+                            </div>
+                            <div class="modal-footer">
+                            <button type="button" class="btn btn-danger p-2 rounded-2" data-bs-dismiss="modal">بستن</button>
+                            </div>
+                        </div>
+                        </div>
+                    </div>
 
-            {% render_comments object request %} 
-            {% include_bootstrap %}
-            {% include_static %}
+                    <div class="row">
+                        <div class="col-4">
+                            <div class="card shadow m-4 rounded" style="width: 12rem; background-color: rgb(210, 235, 235);">
+                                <div class="card-body">
+                                  <h5 class="card-title text-center border-bottom border-dark pb-3 fs-3 ">یک ماهه</h5>
+                                  <p class="card-text text-center fs-4">1000 AFG</p>
+                                  <button type="button" class="btn btn-primary p-2 rounded-2" data-bs-toggle="modal" data-bs-target="#exampleModal">اشتراک ویژه</button>
+                                </div>
+                              </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="card shadow m-4 rounded" style="width: 12rem; background-color: rgb(210, 235, 235);">
+                                <div class="card-body">
+                                  <h5 class="card-title text-center border-bottom border-dark pb-3 fs-3 ">یک ماهه</h5>
+                                  <p class="card-text text-center fs-4">1000 AFG</p>
+                                  <button type="button" class="btn btn-primary p-2 rounded-2" data-bs-toggle="modal" data-bs-target="#exampleModal">اشتراک ویژه</button>
+                                </div>
+                              </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="card shadow m-4 rounded" style="width: 12rem; background-color: rgb(210, 235, 235);">
+                                <div class="card-body">
+                                  <h5 class="card-title text-center border-bottom border-dark pb-3 fs-3">یک ماهه</h5>
+                                  <p class="card-text text-center fs-4">1000 AFG</p>
+                                  <button type="button" class="btn btn-primary p-2 rounded-2" data-bs-toggle="modal" data-bs-target="#exampleModal">اشتراک ویژه</button>
+                                </div>
+                              </div>
+                        </div>
+                    </div>
+                {% endif %}
+                {% if user.is_special_user or user.is_superuser %}
+                    {{ object.description | striptags | safe | escape }}  
+                    {% render_comments object request %} 
+                    {% include_bootstrap %}
+                    {% include_static %}  
+                {% endif %}
+            {% endif %}
             </div>
         </div>
     </div>

@@ -4,22 +4,24 @@ from django.views.generic import ListView, DetailView
 from .models import Article, Category
 from account.mixins import AuthorAccessMixin
 # from django.core.paginator import Paginator
+from django.db.models import Q
 
 # Class Base View
 class ArticleList(ListView):
-    # also we can use this lines of code
-    
-    # model = Article -> #use when we want to get article list without filtering
-    # template_name = 'blog/home.html'
-    # context_object_name = 'articles'
     queryset = Article.objects.published()
-    paginate_by = 2
-    
-    
+    paginate_by = 5
+ 
 class ArticleDetail(DetailView):
     def get_object(self):
         slug = self.kwargs.get('slug')
-        return get_object_or_404(Article.objects.published(), slug=slug)
+        article = get_object_or_404(Article.objects.published(), slug=slug)
+
+        ip_address = self.request.user.ip_address
+
+        if ip_address not in article.hits.all():
+            article.hits.add(ip_address)
+
+        return article
 
 
 class ArticlePreView(AuthorAccessMixin, DetailView):
@@ -29,7 +31,7 @@ class ArticlePreView(AuthorAccessMixin, DetailView):
 
 
 class CategoryList(ListView):
-    paginate_by = 2
+    paginate_by = 5
     template_name = 'blog/category_list.html'
     
     def get_queryset(self):
@@ -39,14 +41,13 @@ class CategoryList(ListView):
         return category.articles.published()
     
     def get_context_data(self, **kwargs):
-        # slug = self.kwargs.get('slug')
         context = super().get_context_data(**kwargs)
         context['category'] = category
         return context
     
     
 class AuthorList(ListView):
-    paginate_by = 2
+    paginate_by = 5
     template_name = 'blog/author_list.html'
     
     def get_queryset(self):
@@ -59,6 +60,20 @@ class AuthorList(ListView):
         # slug = self.kwargs.get('slug')
         context = super().get_context_data(**kwargs)
         context['author'] = author
+        return context
+    
+
+class SearchList(ListView):
+    paginate_by = 5
+    template_name = 'blog/search_list.htl'
+
+    def get_queryset(self):
+        search = self.request.GET.get('q')
+        return Article.objects.filter(Q(description__icontains=search) | Q(title__icontains=search))
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['search'] = self.request.GET.get('q')
         return context
     
     

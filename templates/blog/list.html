@@ -1,6 +1,8 @@
 {% extends "blog/base.html" %}
 
+{% load humanize %}
 {% load static %}
+{% load ratings %}
 {% load base_tags %}
 
 {% block main %}
@@ -21,10 +23,11 @@
 <div class="container px-4 px-lg-5">
     <div class="row gx-4 gx-lg-5 justify-content-center">
         <div class="col-md-10 col-lg-8 col-xl-7">
-            {% comment %} <h3 class='alert alert-primary text-center'>دسته بندی: {{category.title}}</h3> {% endcomment %}
-            {% comment %} {% block header %}{% endblock %} {% endcomment %}
             {% block header %}{% endblock %}
-            
+            <aside style="width: 240px; position: absolute; left: 50px;">
+                {% popular_articles %}
+                {% hot_articles %}
+            </aside>
             <!-- Post preview-->
             {% for article in object_list %}
                 <div class="post-preview">
@@ -32,14 +35,14 @@
                         <h2 class="post-title" style="font-size: 25px;">
                             {{article.title}}
                             {% if article.is_special %}
-                                <span>ویژه</span>
                                 <span class="badge badge-danger" style="font-size: 15px; color: white; background-color: rgb(181, 12, 12); border-radius: 5px; padding: 3px;">ویژه</span>               
                             {% endif %}
                         </h2>
-                        <h3 class="post-subtitle" style="font-size: 20px;">{{article.description | striptags | truncatewords:30}}</h3>
+                        <div>{% ratings article %}</div>
+                        <h3 class="post-subtitle" style="font-size: 20px;">{{article.description | striptags | safe | escape | truncatewords:30}}</h3>
                     </a>
                     <p class="post-meta">
-                        {{article.Jpublish}}
+                        {{article.publish | naturaltime}}
                         <br>
                         نوشته شده توسط : <a href="{% url 'blog:author' article.author %}">{{article.author.get_full_name}}</a>
                     </p>
@@ -48,8 +51,11 @@
                             <a href='{% url 'blog:category' category.slug %}'>#{{category.title}}</a>
                         {% endfor %}
                     </div>
+                    <div class="mt-2">بازدیدها: {{article.hits.count}}</div>
                 </div>
                 <hr class="my-4" />  
+            {% empty %}
+                <p>محتوای برای نمایش وجود ندارد.</p>
             {% endfor %}
             <!-- Pager-->
             {% if is_paginated %}

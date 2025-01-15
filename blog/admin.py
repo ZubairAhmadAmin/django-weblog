@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Article, Category
+from .models import Article, Category, IPAddress
 
 admin.site.site_header = 'جنگو ویبلاک'
 # remove action from admin panle
@@ -62,5 +62,6 @@ class ArticleAdmin(admin.ModelAdmin):
 # Register your models here.
 admin.site.register(Article, ArticleAdmin)
 admin.site.register(Category, CategoryAdmin)
+admin.site.register(IPAddress)
 
 

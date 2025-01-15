@@ -1,0 +1,10 @@
+{% extends "star_ratings/widget_base.html" %}
+{% block rating_detail %}
+
+    {% if not user.is_authenticated %}
+        <div>
+            <small class="badge badge-warning p-2 rounded-2 text-white">برای رای دادن باید وارد شوید.</small>
+        </div>
+    {% endif %}
+
+{% endblock %}

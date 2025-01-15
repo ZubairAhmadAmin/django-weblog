@@ -1,0 +1,9 @@
+<div style="border: 1px solid #bfbfbf; padding: 15px; border-radius: 5px; margin-bottom: 20px; box-shadow: 5px 5px #f5f2f2; font-weight: bolder;">
+    <h2 class="h4">{{ title }}</h2>
+    <hr>
+    {% for a in articles %}
+        <div class="p-1">
+            <a class="text-decoration-none" href="{% url 'blog:detail' a.slug %}">{{a.title | striptags | safe | escape | truncatewords:2}}</a>
+        </div>
+    {% endfor %}
+</div>
