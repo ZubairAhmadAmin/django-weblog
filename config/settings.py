@@ -30,7 +30,8 @@ LOGUOT_REDIRECT_URL = 'login'
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = config('SECRET_KEY')
+# SECRET_KEY = config('SECRET_KEY')
+SECRET_KEY = 'django-insecure-)2w12*+=%_q9tci8ha*3u0sn*&dc@$bf@7+ry!4c#eknjv($)j'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
