@@ -25,7 +25,6 @@
         </div>
     </div>
 </header>
-
 <!-- Post Content-->
 <article class="mb-4">
     <div class="container px-4 px-lg-5">
@@ -94,6 +93,8 @@
                     {% include_bootstrap %}
                     {% include_static %}  
                 {% endif %}
+            {% else %}
+                {{ object.description | striptags | safe | escape }}
             {% endif %}
             </div>
         </div>
